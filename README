@@ -1,1 +1,5 @@
 PyAspects is a project to ease aspect-oriented programming in Python language.
+
+Basic Usage:
+import pyaspects
+pyaspects.weave(some_object_class_or_method, before_func=f1, after_func=f2)
