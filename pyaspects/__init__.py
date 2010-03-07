@@ -43,8 +43,6 @@ def weave(class_or_object_or_method, before_func=None, after_func=None):
 
     x = class_or_object_or_method
     type_x = type(x)
-    print dir(x)
-    print type_x, type_x == types.MethodType, type_x == types.UnboundMethodType, type_x == types.FunctionType
     if type_x in (types.ClassType, types.InstanceType):
         weave_all_methods(DummyAspect(), x)
 
