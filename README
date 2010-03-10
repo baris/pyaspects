@@ -58,9 +58,7 @@ using the proceed method of the MetaAspect.
 Aspects can provide methods to be executed before or after the weaved
 methods.
 
-Example:
-The example TestAspect below will print a line after executing the
-original method.
+Example: 
 
 class TestAspect:
     __metaclass__ = MetaAspect
@@ -68,3 +66,15 @@ class TestAspect:
 
     def after(self, wobj, data, *args, **kwargs):
         print "Test aspect"
+
+
+class MyAroundAspect:
+    __metaclass__ = MetaAspect
+    name = "MyAround"
+
+    def around(self, wobj, data, *args, **kwargs):
+        print "running around."
+        ret = self.proceed(wobj, data, *args, **kwargs)
+        print "do something with return value"
+        return ret
+    
