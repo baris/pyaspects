@@ -51,10 +51,18 @@ def __weave_method(aspect, obj, met_name):
             if hasattr(a, "before"):
                 a.before(wobj, data, *args, **kwargs)
         
-        # run original method
-        met_name = data['method_name']
-        met = getattr(wobj, met_name)
-        ret =  met.im_func(wobj, *args, **kwargs)
+        has_around = False
+        for a in aspect_dict.values():
+            if hasattr(a, "around"):
+                has_around = True
+                ret = a.around(wobj, data, *args, **kwargs)
+
+        if not has_around:
+            # run original method only if the method doesn't have an
+            # around aspect.
+            met_name = data['method_name']
+            met = getattr(wobj, met_name)
+            ret =  met.im_func(wobj, *args, **kwargs)
 
         # run aspect's after method
         for a in aspect_dict.values():
@@ -79,6 +87,9 @@ def __weave_method(aspect, obj, met_name):
     else:
         new_method = new.instancemethod(__aspect_wrapper, obj, obj.__class__)
     setattr(obj, met_name, new_method)
+
+    data['original_method'] = getattr(obj, data['method_name'])
+
 
 
 ##

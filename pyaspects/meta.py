@@ -42,6 +42,11 @@ class MetaAspect(type):
         def after(cls, wobj, data, *args, **kwargs):
             if cls.hasJoinPoint(wobj, data):
                     met = getattr(cls, 'after__original')
+                    return met.im_func(cls, wobj, data, *args, **kwargs)
+
+        def around(cls, wobj, data, *args, **kwargs):
+            if cls.hasJoinPoint(wobj, data):
+                    met = getattr(cls, 'around__original')
                     return met.im_func(cls, wobj, data, *args, **kwargs)        
 
         def hasJoinPoint(cls, wobj, data):
@@ -67,6 +72,9 @@ class MetaAspect(type):
         if classdict.has_key('after'):
             classdict['after__original'] = classdict['after']
             classdict['after'] = after
+        if classdict.has_key('around'):
+            classdict['around__original'] = classdict['around']
+            classdict['around'] = around
         classdict['_pointcut'] = _pointcut
         classdict['updatePointCut'] = updatePointCut
         classdict['hasJoinPoint'] = hasJoinPoint
