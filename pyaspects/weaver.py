@@ -48,7 +48,8 @@ def __weave_method(aspect, obj, met_name):
 
         # run aspect's before method
         for a in aspect_dict.values():
-            a.before(wobj, data, *args, **kwargs)
+            if hasattr(a, "before"):
+                a.before(wobj, data, *args, **kwargs)
         
         # run original method
         met_name = data['method_name']
@@ -57,7 +58,8 @@ def __weave_method(aspect, obj, met_name):
 
         # run aspect's after method
         for a in aspect_dict.values():
-            a.after(wobj, data, *args, **kwargs)
+            if hasattr(a, "after"):
+                a.after(wobj, data, *args, **kwargs)
 
         return ret
 

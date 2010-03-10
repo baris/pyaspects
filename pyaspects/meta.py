@@ -43,10 +43,10 @@ class MetaAspect(type):
             if cls.hasJoinPoint(wobj, data):
                     met = getattr(cls, 'after__original')
                     return met.im_func(cls, wobj, data, *args, **kwargs)        
+
         def hasJoinPoint(cls, wobj, data):
             met_name = data['original_method_name']
 
-            
             if cls._pointcut.has_key(wobj):
                 if met_name in cls._pointcut[wobj]:
                     return True
@@ -60,12 +60,13 @@ class MetaAspect(type):
 
             return False
 
-        # we'll first rebind before and after.
-        # then bind our new modules
-        classdict['before__original'] = classdict['before']
-        classdict['after__original'] = classdict['after']
-        classdict['before'] = before
-        classdict['after'] = after
+        # bind/rebind methods/attributes
+        if classdict.has_key('before'):
+            classdict['before__original'] = classdict['before']
+            classdict['before'] = before
+        if classdict.has_key('after'):
+            classdict['after__original'] = classdict['after']
+            classdict['after'] = after
         classdict['_pointcut'] = _pointcut
         classdict['updatePointCut'] = updatePointCut
         classdict['hasJoinPoint'] = hasJoinPoint
