@@ -17,11 +17,25 @@ import inspect
 
 from pyaspects.pointcut import PointCut
 
+class AspectError(Exception):
+    pass
 
 ##
 # __weave_method, weaves the method (met_name) of an object (obj) with
 # an Aspect instance.
 def __weave_method(aspect, obj, met_name):
+
+    def around_aspect(a):
+        try:
+            return getattr(a, "around")
+        except AttributeError:
+            return None
+
+    def has_around_aspect(o):
+        for a in aspect_dict.values():
+            if around_aspect(a):
+                return True
+        return False
 
     # set or update the aspects list of weaved object
     try:
@@ -29,8 +43,13 @@ def __weave_method(aspect, obj, met_name):
     except:
         # no aspects defined before
         aspect_dict = {}
+
+
     if not aspect_dict.has_key(aspect.name):
-        aspect_dict[aspect.name] = aspect
+        if around_aspect(aspect) and has_around_aspect(obj):
+            raise AspectError('Already have an aspect that provide "around". Can not apply %s' % aspect.name)
+        else:
+            aspect_dict[aspect.name] = aspect
     setattr(obj, '__aspect_dict', aspect_dict)
 
 
@@ -51,13 +70,13 @@ def __weave_method(aspect, obj, met_name):
             if hasattr(a, "before"):
                 a.before(wobj, data, *args, **kwargs)
         
-        has_around = False
+
         for a in aspect_dict.values():
             if hasattr(a, "around"):
                 has_around = True
                 ret = a.around(wobj, data, *args, **kwargs)
-
-        if not has_around:
+                break
+        else:
             # run original method only if the method doesn't have an
             # around aspect.
             met_name = data['method_name']
