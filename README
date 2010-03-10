@@ -21,7 +21,7 @@ Using the convenience function w/o creating an aspect.
 
 def my_before_func(wobj, data, *args, **kwargs):
     # wobj: the object that is wrapped
-    # data: aspect's data where you can get the original method name
+    # data: aspect's data where you can get the original method or its name
     # args: arguments passed to the original method
     # kwargs: keywords passed to the original method
     do_something()
@@ -35,6 +35,23 @@ pyaspects.weave_all_methods(MyAspect(), MyClass)
 pyaspects.weave_all_methods(MyAspect(), MyClass.my_method)
 pyaspects.weave_all_methods(MyAspect(), my_instance)
 pyaspects.weave_all_methods(MyAspect(), my_instance.my_method)
+
+
+### Types of Advices ###
+
+With pyaspects you can inject some code before, after or instead
+(around) of a method.
+
+before and after advices are quite strait-forward they basically get
+the object and arguments of the method and run before/after the
+execution of the method. You can have as many before/after advices as
+you want to.
+
+On the other hand, a method can only have one around advise. This is
+because around advice will be run in place and it's return value will
+be used instead. But, around advice can invoke the original method
+using the proceed method of the MetaAspect.
+
 
 ### How to define a new aspect ###
 
