@@ -73,7 +73,8 @@ def __weave_method(aspect, obj, met_name):
 
         for a in aspect_dict.values():
             if hasattr(a, "around"):
-                has_around = True
+                # around aspect can run the original method when needed
+                data['original_method'] = getattr(obj, data['method_name'])
                 ret = a.around(wobj, data, *args, **kwargs)
                 break
         else:
@@ -90,24 +91,22 @@ def __weave_method(aspect, obj, met_name):
 
         return ret
 
-    # rename the wrapper
-    __aspect_wrapper.__name__ = met_name
-
     original_method = getattr(obj, met_name)
     weaved_name = data['method_name']
+
+    # rename the wrapper
+    __aspect_wrapper.__name__ = met_name
+    __aspect_wrapper.__doc__ = original_method.__doc__
 
     # don't rebind the weaved method
     if not hasattr(obj, weaved_name):
         setattr(obj, weaved_name, original_method)
 
-    __aspect_wrapper.__doc__ = original_method.__doc__
     if inspect.isclass(obj):
         new_method = new.instancemethod(__aspect_wrapper, None, obj)
     else:
         new_method = new.instancemethod(__aspect_wrapper, obj, obj.__class__)
     setattr(obj, met_name, new_method)
-
-    data['original_method'] = getattr(obj, data['method_name'])
 
 
 

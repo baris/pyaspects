@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2006-2007, TUBITAK/UEKAE
+# Copyright (C) 2006-2010, TUBITAK/UEKAE
+# Copyright (C) 2010, INRIA
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -65,6 +66,11 @@ class MetaAspect(type):
 
             return False
 
+        def proceed(cls, wobj, data, *args, **kwargs):
+            # continue on running the original method
+            if data.has_key('original_method'):
+                return data['original_method'](wobj, *args, **kwargs)
+
         # bind/rebind methods/attributes
         if classdict.has_key('before'):
             classdict['before__original'] = classdict['before']
@@ -75,6 +81,7 @@ class MetaAspect(type):
         if classdict.has_key('around'):
             classdict['around__original'] = classdict['around']
             classdict['around'] = around
+            classdict['proceed'] = proceed
         classdict['_pointcut'] = _pointcut
         classdict['updatePointCut'] = updatePointCut
         classdict['hasJoinPoint'] = hasJoinPoint
