@@ -18,6 +18,7 @@
 # Every aspect class should set this as __metaclass__
 
 
+import inspect
 from pyaspects.pointcut import PointCut
 
 
@@ -69,7 +70,10 @@ class MetaAspect(type):
         def proceed(cls, wobj, data, *args, **kwargs):
             # continue on running the original method
             if data.has_key('original_method'):
-                return data['original_method'](wobj, *args, **kwargs)
+                if inspect.isclass(wobj):
+                    return data['original_method'](wobj, *args, **kwargs)
+                else:
+                    return data['original_method'](*args, **kwargs)
 
         # bind/rebind methods/attributes
         if classdict.has_key('before'):
