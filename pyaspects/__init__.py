@@ -12,7 +12,7 @@
 
 __version__ = "0.3"
 
-from pyaspects.weaver import weave_method, weave_all_methods
+from pyaspects.weaver import weave_method, weave_all_methods, AspectError
 
 ##
 # convenience function to weave a class/object/method
