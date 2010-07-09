@@ -10,7 +10,7 @@
 #
 # Please read the COPYING file.
 
-__version__ = "0.4"
+__version__ = "0.4.1"
 
 from pyaspects.weaver import weave_method, weave_all_methods, AspectError
 
