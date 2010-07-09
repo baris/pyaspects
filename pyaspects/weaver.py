@@ -65,6 +65,9 @@ def __weave_method(aspect, obj, met_name):
 
     def __aspect_wrapper(wobj, *args, **kwargs):
 
+        # reset the return value for every call
+        data['method_return_value'] = None
+
         # run aspect's before method
         for a in aspect_dict.values():
             if hasattr(a, "before"):
