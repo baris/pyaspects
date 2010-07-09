@@ -76,6 +76,7 @@ def __weave_method(aspect, obj, met_name):
                 # around aspect can run the original method when needed
                 data['original_method'] = getattr(obj, data['method_name'])
                 ret = a.around(wobj, data, *args, **kwargs)
+                data['method_return_value'] = ret
                 break
         else:
             # run original method only if the method doesn't have an
@@ -83,6 +84,7 @@ def __weave_method(aspect, obj, met_name):
             met_name = data['method_name']
             met = getattr(wobj, met_name)
             ret =  met.im_func(wobj, *args, **kwargs)
+            data['method_return_value'] = ret
 
         # run aspect's after method
         for a in aspect_dict.values():

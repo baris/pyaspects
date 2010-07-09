@@ -21,7 +21,7 @@ Using the convenience function w/o creating an aspect.
 
 def my_before_func(wobj, data, *args, **kwargs):
     # wobj: the object that is wrapped
-    # data: aspect's data where you can get the original method or its name
+    # data: aspect's data where you can get information about the weaved method
     # args: arguments passed to the original method
     # kwargs: keywords passed to the original method
     do_something()
@@ -53,6 +53,22 @@ be used instead. But, around advice can invoke the original method
 using the proceed method of the MetaAspect.
 
 
+### What is in "data" ###
+
+The data argument passed to aspects is a dictionary and provides
+information about the weaved method.
+
+data['original_method_name'] : The method name before weaving happens.
+
+data['method_name'] : Weaved method name. This is basically the method
+"proceed" will call in around aspect.
+
+data['method_return_value'] : Return value of the original
+method. This will be available only to after aspect and around aspect
+(if it calls proceed).
+
+data['__class__'] : Class object that the method belongs to.
+
 ### How to define a new aspect ###
 
 Aspects can provide methods to be executed before or after the weaved
@@ -77,4 +93,4 @@ class MyAroundAspect:
         ret = self.proceed(wobj, data, *args, **kwargs)
         print "do something with return value"
         return ret
-    
+
