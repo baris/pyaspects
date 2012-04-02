@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Pyaspects by baris</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/baris/pyaspects">Fork On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/baris/pyaspects/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/baris/pyaspects/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Pyaspects</h1>
+          <p>aspect oriented programming library for Python</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/baris">baris</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <p>PyAspects is a project to ease aspect-oriented programming in Python language.</p>
+
+<h3>Basic Usage</h3>
+
+<p>"weave" convenience function can use ordinary functions to apply
+aspects to a class, object or a method.</p>
+
+<ul>
+<li><p>When used with a class, all methods of the class will be
+weaved. This will affect all instances of the class.</p></li>
+<li><p>When used with an object, all methods of the object will be
+weaved. But this won't affect any other instances of the same
+class.</p></li>
+<li><p>When used with a method, only that particular method will be
+weaved.</p></li>
+</ul><p>Example:
+Using the convenience function w/o creating an aspect.</p>
+
+<pre><code>def my_before_func(wobj, data, *args, **kwargs):
+    # wobj: the object that is wrapped
+    # data: aspect's data where you can get information about the weaved method
+    # args: arguments passed to the original method
+    # kwargs: keywords passed to the original method
+    do_something()
+
+pyaspects.weave(some_object_class_or_method, before_func=my_before_func)
+</code></pre>
+
+<p>Using an aspect to weave a method, class, object.</p>
+
+<pre><code>pyaspects.weave_all_methods(MyAspect(), MyClass)
+pyaspects.weave_all_methods(MyAspect(), MyClass.my_method)
+pyaspects.weave_all_methods(MyAspect(), my_instance)
+pyaspects.weave_all_methods(MyAspect(), my_instance.my_method)
+</code></pre>
+
+<h3>Types of Advices</h3>
+
+<p>With pyaspects you can inject some code before, after or instead
+(around) of a method.</p>
+
+<p>before and after advices are quite strait-forward they basically get
+the object and arguments of the method and run before/after the
+execution of the method. You can have as many before/after advices as
+you want to.</p>
+
+<p>On the other hand, a method can only have one around advise. This is
+because around advice will be run in place and it's return value will
+be used instead. But, around advice can invoke the original method
+using the proceed method of the MetaAspect.</p>
+
+<h3>What is in "data"</h3>
+
+<p>The data argument passed to aspects is a dictionary and provides
+information about the weaved method.</p>
+
+<p>data['original_method_name'] : The method name before weaving happens.</p>
+
+<p>data['method_name'] : Weaved method name. This is basically the method
+"proceed" will call in around aspect.</p>
+
+<p>data['method_return_value'] : Return value of the original
+method. This will be available only to after aspect and around aspect
+(if it calls proceed).</p>
+
+<p>data['<strong>class</strong>'] : Class object that the method belongs to.</p>
+
+<h3>How to define a new aspect</h3>
+
+<p>Aspects can provide methods to be executed before or after the weaved
+methods.</p>
+
+<p>Example: </p>
+
+<pre><code>class TestAspect:
+    __metaclass__ = MetaAspect
+    name = "TestAspect"
+
+    def after(self, wobj, data, *args, **kwargs):
+        print "Test aspect"
+
+
+class MyAroundAspect:
+    __metaclass__ = MetaAspect
+    name = "MyAround"
+
+    def around(self, wobj, data, *args, **kwargs):
+        print "running around."
+        ret = self.proceed(wobj, data, *args, **kwargs)
+        print "do something with return value"
+        return ret
+</code></pre>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
