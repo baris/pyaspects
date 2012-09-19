@@ -10,19 +10,23 @@
 #
 # Please read the COPYING file.
 
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+
 import pyaspects
 
 PYASPECTS_VERSION = pyaspects.__version__
 
 setup(name="pyaspects",
-      version= PYASPECTS_VERSION,
-      description="PyAspects",
-      long_description="PyAspects.",
-      license="GNU GPL2",
-      author="Barış Metin",
-      author_email="baris@metin.org",
-      url="http://www.metin.org",
+      version = PYASPECTS_VERSION,
+      description = "PyAspects",
+      long_description = "A package to help with aspect oritented programming in Python",
+      license = "GNU GPL2",
+      author = "Barış Metin",
+      author_email = "baris@metin.org",
+      url = "http://www.metin.org",
       packages = ['pyaspects'],
-      package_dir = {'': ''},
+      provides = ['pyaspects'],
     )
