@@ -54,50 +54,50 @@ def __weave_method(aspect, obj, met_name):
 
 
     # new method's data 
-    data = {}
-    data['original_method_name'] = met_name
-    data['method_name'] = '__' + met_name + '_weaved'
+    _wobj_data_ = {}
+    _wobj_data_['original_method_name'] = met_name
+    _wobj_data_['method_name'] = '__' + met_name + '_weaved'
     if inspect.isclass(obj):
-        data['__class__'] = obj
+        _wobj_data_['__class__'] = obj
     else:
-        data['__class__'] = obj.__class__
+        _wobj_data_['__class__'] = obj.__class__
 
 
-    def __aspect_wrapper(wobj, *args, **kwargs):
+    def __aspect_wrapper(_wobj_, *args, **kwargs):
 
         # reset the return value for every call
-        data['method_return_value'] = None
+        _wobj_data_['method_return_value'] = None
 
         # run aspect's before method
         for a in aspect_dict.values():
             if hasattr(a, "before"):
-                a.before(wobj, data, *args, **kwargs)
+                a.before(_wobj_, _wobj_data_, *args, **kwargs)
         
 
         for a in aspect_dict.values():
             if hasattr(a, "around"):
                 # around aspect can run the original method when needed
-                data['original_method'] = getattr(obj, data['method_name'])
-                ret = a.around(wobj, data, *args, **kwargs)
-                data['method_return_value'] = ret
+                _wobj_data_['original_method'] = getattr(obj, _wobj_data_['method_name'])
+                ret = a.around(_wobj_, _wobj_data_, *args, **kwargs)
+                _wobj_data_['method_return_value'] = ret
                 break
         else:
             # run original method only if the method doesn't have an
             # around aspect.
-            met_name = data['method_name']
-            met = getattr(wobj, met_name)
-            ret =  met.im_func(wobj, *args, **kwargs)
-            data['method_return_value'] = ret
+            met_name = _wobj_data_['method_name']
+            met = getattr(_wobj_, met_name)
+            ret =  met.im_func(_wobj_, *args, **kwargs)
+            _wobj_data_['method_return_value'] = ret
 
         # run aspect's after method
         for a in aspect_dict.values():
             if hasattr(a, "after"):
-                a.after(wobj, data, *args, **kwargs)
+                a.after(_wobj_, _wobj_data_, *args, **kwargs)
 
         return ret
 
     original_method = getattr(obj, met_name)
-    weaved_name = data['method_name']
+    weaved_name = _wobj_data_['method_name']
 
     # rename the wrapper
     __aspect_wrapper.__name__ = met_name

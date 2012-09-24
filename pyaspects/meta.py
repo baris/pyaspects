@@ -36,44 +36,44 @@ class MetaAspect(type):
                 for met_name in met_names:
                     cls._pointcut.addMethod(wobj, met_name)
 
-        def before(cls, wobj, data, *args, **kwargs):
-            if cls.hasJoinPoint(wobj, data):
+        def before(cls, _wobj_, _wobj_data_, *args, **kwargs):
+            if cls.hasJoinPoint(_wobj_, _wobj_data_):
                     met = getattr(cls, 'before__original')
-                    return met.im_func(cls, wobj, data, *args, **kwargs)
+                    return met.im_func(cls, _wobj_, _wobj_data_, *args, **kwargs)
 
-        def after(cls, wobj, data, *args, **kwargs):
-            if cls.hasJoinPoint(wobj, data):
+        def after(cls, _wobj_, _wobj_data_, *args, **kwargs):
+            if cls.hasJoinPoint(_wobj_, _wobj_data_):
                     met = getattr(cls, 'after__original')
-                    return met.im_func(cls, wobj, data, *args, **kwargs)
+                    return met.im_func(cls, _wobj_, _wobj_data_, *args, **kwargs)
 
-        def around(cls, wobj, data, *args, **kwargs):
-            if cls.hasJoinPoint(wobj, data):
+        def around(cls, _wobj_, _wobj_data_, *args, **kwargs):
+            if cls.hasJoinPoint(_wobj_, _wobj_data_):
                     met = getattr(cls, 'around__original')
-                    return met.im_func(cls, wobj, data, *args, **kwargs)        
+                    return met.im_func(cls, _wobj_, _wobj_data_, *args, **kwargs)        
 
-        def hasJoinPoint(cls, wobj, data):
-            met_name = data['original_method_name']
+        def hasJoinPoint(cls, _wobj_, _wobj_data_):
+            met_name = _wobj_data_['original_method_name']
 
-            if cls._pointcut.has_key(wobj):
-                if met_name in cls._pointcut[wobj]:
+            if cls._pointcut.has_key(_wobj_):
+                if met_name in cls._pointcut[_wobj_]:
                     return True
 
             ##
             # Try object's class if instance is not found
-            klass = data['__class__']
+            klass = _wobj_data_['__class__']
             if cls._pointcut.has_key(klass):
                 if met_name in cls._pointcut[klass]:
                     return True
 
             return False
 
-        def proceed(cls, wobj, data, *args, **kwargs):
+        def proceed(cls, _wobj_, _wobj_data_, *args, **kwargs):
             # continue on running the original method
-            if data.has_key('original_method'):
-                if inspect.isclass(wobj):
-                    return data['original_method'](wobj, *args, **kwargs)
+            if _wobj_data_.has_key('original_method'):
+                if inspect.isclass(_wobj_):
+                    return _wobj_data_['original_method'](_wobj_, *args, **kwargs)
                 else:
-                    return data['original_method'](*args, **kwargs)
+                    return _wobj_data_['original_method'](*args, **kwargs)
 
         # bind/rebind methods/attributes
         if classdict.has_key('before'):
