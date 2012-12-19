@@ -49,7 +49,7 @@ class MetaAspect(type):
         def around(cls, _wobj_, _wobj_data_, *args, **kwargs):
             if cls.hasJoinPoint(_wobj_, _wobj_data_):
                     met = getattr(cls, 'around__original')
-                    return met.im_func(cls, _wobj_, _wobj_data_, *args, **kwargs)        
+                    return met.im_func(cls, _wobj_, _wobj_data_, *args, **kwargs)
 
         def hasJoinPoint(cls, _wobj_, _wobj_data_):
             met_name = _wobj_data_['original_method_name']
@@ -70,10 +70,7 @@ class MetaAspect(type):
         def proceed(cls, _wobj_, _wobj_data_, *args, **kwargs):
             # continue on running the original method
             if _wobj_data_.has_key('original_method'):
-                if inspect.isclass(_wobj_):
-                    return _wobj_data_['original_method'](_wobj_, *args, **kwargs)
-                else:
-                    return _wobj_data_['original_method'](*args, **kwargs)
+                return _wobj_data_['original_method'](_wobj_, *args, **kwargs)
 
         # bind/rebind methods/attributes
         if classdict.has_key('before'):
@@ -89,7 +86,7 @@ class MetaAspect(type):
         classdict['_pointcut'] = _pointcut
         classdict['updatePointCut'] = updatePointCut
         classdict['hasJoinPoint'] = hasJoinPoint
-        
+
         selfclass = super(MetaAspect, cls).__new__\
             (cls, classname, bases, classdict)
         return selfclass
