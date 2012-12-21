@@ -21,7 +21,7 @@ def weave(class_or_object_or_method, before_func=None, after_func=None):
     import types
     from pyaspects.meta import MetaAspect
 
-    
+
     dummy_aspect_name = "DummyAspect"
     if before_func:
         dummy_aspect_name += "_before_%s" % before_func.__name__
@@ -51,10 +51,3 @@ def weave(class_or_object_or_method, before_func=None, after_func=None):
             weave_method(DummyAspect(), x.im_self, x.__name__)
         else:
             weave_method(DummyAspect(), x.im_class, x.__name__)
-
-
-        
-
-        
-
-    

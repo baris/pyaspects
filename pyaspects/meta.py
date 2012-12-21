@@ -38,18 +38,18 @@ class MetaAspect(type):
 
         def before(cls, _wobj_, _wobj_data_, *args, **kwargs):
             if cls.hasJoinPoint(_wobj_, _wobj_data_):
-                    met = getattr(cls, 'before__original')
-                    return met.im_func(cls, _wobj_, _wobj_data_, *args, **kwargs)
+                met = getattr(cls, 'before__original')
+                return met.im_func(cls, _wobj_, _wobj_data_, *args, **kwargs)
 
         def after(cls, _wobj_, _wobj_data_, *args, **kwargs):
             if cls.hasJoinPoint(_wobj_, _wobj_data_):
-                    met = getattr(cls, 'after__original')
-                    return met.im_func(cls, _wobj_, _wobj_data_, *args, **kwargs)
+                met = getattr(cls, 'after__original')
+                return met.im_func(cls, _wobj_, _wobj_data_, *args, **kwargs)
 
         def around(cls, _wobj_, _wobj_data_, *args, **kwargs):
             if cls.hasJoinPoint(_wobj_, _wobj_data_):
-                    met = getattr(cls, 'around__original')
-                    return met.im_func(cls, _wobj_, _wobj_data_, *args, **kwargs)
+                met = getattr(cls, 'around__original')
+                return met.im_func(cls, _wobj_, _wobj_data_, *args, **kwargs)
 
         def hasJoinPoint(cls, _wobj_, _wobj_data_):
             met_name = _wobj_data_['original_method_name']
@@ -90,4 +90,3 @@ class MetaAspect(type):
         selfclass = super(MetaAspect, cls).__new__\
             (cls, classname, bases, classdict)
         return selfclass
-

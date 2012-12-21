@@ -53,7 +53,7 @@ def __weave_method(aspect, obj, met_name):
     setattr(obj, '__aspect_dict', aspect_dict)
 
 
-    # new method's data 
+    # new method's data
     _wobj_data_ = {}
     _wobj_data_['original_method_name'] = met_name
     _wobj_data_['method_name'] = '__' + met_name + '_weaved'
@@ -72,7 +72,7 @@ def __weave_method(aspect, obj, met_name):
         for a in aspect_dict.values():
             if hasattr(a, "before"):
                 a.before(_wobj_, _wobj_data_, *args, **kwargs)
-        
+
 
         for a in aspect_dict.values():
             if hasattr(a, "around"):
@@ -130,7 +130,7 @@ def weave_method(aspect, class_or_object, met_name):
 ##
 # weave all methods in class_or_object with an aspect
 def weave_all_methods(aspect, class_or_object):
-    
+
     p = PointCut()
     _dict = dict(inspect.getmembers(class_or_object, inspect.ismethod))
     for met_name in _dict:
