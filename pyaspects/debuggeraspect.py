@@ -23,7 +23,7 @@ class DebuggerAspect:
     def before(self, wobj, data, *args, **kwargs):
         met_name = data['original_method_name']
         fun_str = "%s (args: %s  kwargs: %s)" % (met_name, args, kwargs)
-       
+
         self.out.write("In object %s, _entering_ function: %s\n" % (wobj, fun_str))
         self.out.flush()
 
@@ -31,7 +31,6 @@ class DebuggerAspect:
     def after(self, wobj, data, *args, **kwargs):
         met_name = data['original_method_name']
         fun_str = "%s (args: %s  kwargs: %s)" % (met_name, args, kwargs)
-        
+
         self.out.write("In object %s, _left_ function: %s\n" % (wobj, fun_str))
         self.out.flush()
-
